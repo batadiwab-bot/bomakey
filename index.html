@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bomakey — Annonces non vérifiées</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+/* ── RESET & BASE ── */
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#F5F4F8;
+  font-family:'DM Sans',system-ui,sans-serif;
+  min-height:100vh;
+  color:#1a1a2e;
+}
+@media(prefers-reduced-motion:reduce){
+  *{transition-duration:0.01ms !important;animation-duration:0.01ms !important}
+}
+
+/* ── TOPBAR ── */
+.topbar{
+  background:linear-gradient(135deg,#6B00A0,#A810A8);
+  padding:13px 24px;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  flex-wrap:wrap;
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+.topbar-logo{
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:18px;
+  font-weight:700;
+  color:#fff;
+  letter-spacing:-0.3px;
+}
+.topbar-logo span{color:rgba(255,255,255,0.55);font-weight:400;font-size:14px;margin-left:2px}
+.topbar-sep{width:1px;height:18px;background:rgba(255,255,255,0.2);flex-shrink:0}
+.topbar-nav{display:flex;gap:4px;flex:1;flex-wrap:wrap}
+.topbar-nav a{
+  font-size:12px;
+  font-weight:500;
+  color:rgba(255,255,255,0.6);
+  text-decoration:none;
+  padding:5px 10px;
+  border-radius:6px;
+  transition:background .15s,color .15s;
+}
+.topbar-nav a:hover{color:#fff;background:rgba(255,255,255,0.1)}
+.topbar-nav a.active{color:#fff;background:rgba(255,255,255,0.15)}
+.topbar-ctas{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+.topbar-ctas a{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:12px;font-weight:600;
+  padding:7px 16px;
+  border-radius:8px;
+  text-decoration:none;
+  transition:all .15s;
+}
+.btn-white{background:#fff;color:#6B00A0}
+.btn-white:hover{background:#f0e6ff}
+.btn-ghost{background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.25)}
+.btn-ghost:hover{background:rgba(255,255,255,0.2)}
+
+/* ── BANNER ── */
+.banner{
+  background:#FFFBEB;
+  border-bottom:1px solid #FDE68A;
+  padding:9px 24px;
+  display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;
+}
+.banner-dot{width:7px;height:7px;background:#F59E0B;border-radius:50%;flex-shrink:0;margin-top:4px}
+.banner-text{font-size:11.5px;color:#78350F;flex:1;min-width:200px;line-height:1.5}
+.banner-text strong{font-weight:600}
+.banner-link{
+  font-size:11.5px;color:#92400E;font-weight:600;
+  text-decoration:underline;text-underline-offset:2px;
+  white-space:nowrap;
+}
+
+/* ── SECTION HEAD ── */
+.section-head{
+  padding:20px 24px 10px;
+  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+}
+.section-title{
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:19px;font-weight:700;color:#1a1a2e;
+}
+.section-count{font-size:12px;color:#9CA3AF;font-weight:500}
+
+/* ── FILTERS ── */
+.filters{padding:0 24px 18px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.filter-group-label{
+  font-size:10px;font-weight:600;color:#C4B5D8;
+  text-transform:uppercase;letter-spacing:.6px;
+  margin-right:2px;
+}
+.filter-sep{width:1px;height:16px;background:#E5E7EB;margin:0 4px}
+.filter-pill{
+  font-size:11px;font-weight:500;color:#6B7280;
+  border:1px solid #E5E7EB;
+  padding:5px 13px;border-radius:20px;
+  background:#fff;cursor:pointer;
+  transition:all .15s;
+  user-select:none;
+  line-height:1.2;
+}
+.filter-pill:hover{border-color:#C084FC;color:#7B00B4;background:#faf5ff}
+.filter-pill.active{
+  background:#7B00B4;
+  border-color:#7B00B4;
+  color:#fff;
+  font-weight:600;
+}
+
+/* ── GRID ── */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  padding:0 24px;
+}
+
+/* ── CARD ── */
+.card-wrap{
+  position:relative;
+  height:96px;
+  display:flex;
+  align-items:center;
+  cursor:pointer;
+  border-radius:0 48px 48px 0;
+  outline:none;
+}
+/* Focus visible pour accessibilité clavier */
+.card-wrap:focus-visible .card-body{
+  outline:2px solid #7B00B4;
+  outline-offset:2px;
+}
+
+/* Skeleton loader pendant chargement image */
+.card-circle{
+  position:absolute;
+  left:0;top:0;
+  z-index:3;
+  width:96px;height:96px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#6B00A0,#A810A8);
+  box-shadow:0 3px 16px rgba(107,0,160,0.3);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  flex-shrink:0;
+}
+.card-circle::before{
+  /* skeleton shimmer quand pas de photo chargée */
+  content:'';
+  position:absolute;inset:0;border-radius:50%;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.08) 50%,transparent 100%);
+  background-size:200% 100%;
+  animation:shimmer 1.6s infinite;
+  z-index:1;
+}
+@keyframes shimmer{
+  0%{background-position:200% 0}
+  100%{background-position:-200% 0}
+}
+.circle-photo{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  border-radius:50%;
+  z-index:2;
+  transition:transform .45s cubic-bezier(.4,0,.2,1),opacity .3s;
+  opacity:0;
+}
+/* Fondu dès que l'image est chargée */
+.circle-photo.loaded{opacity:1}
+.circle-overlay{
+  position:absolute;inset:0;border-radius:50%;
+  background:linear-gradient(135deg,rgba(107,0,160,0.2),rgba(168,16,168,0.15));
+  z-index:3;pointer-events:none;
+}
+.card-wrap:hover .circle-photo{transform:scale(1.1)}
+.card-wrap:hover .card-circle{box-shadow:0 6px 24px rgba(107,0,160,0.4)}
+
+.circle-icon{
+  font-size:26px;
+  color:rgba(255,255,255,0.9);
+  position:relative;z-index:5;
+}
+.arc-svg{
+  position:absolute;
+  width:200px;height:200px;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%) scale(0.5);
+  pointer-events:none;z-index:6;
+}
+.arc-svg.bot{transform:translate(-50%,-50%) scale(0.5) rotate(180deg)}
+
+.card-badge{
+  position:absolute;top:7px;left:7px;z-index:10;
+  font-size:8.5px;font-weight:700;
+  padding:2px 7px;border-radius:20px;
+  pointer-events:none;
+  letter-spacing:.2px;
+}
+.badge-pending{background:#FEF3C7;color:#92400E}
+.badge-new{background:#D1FAE5;color:#065F46}
+
+.card-body{
+  position:absolute;
+  left:48px;right:0;top:0;bottom:0;
+  z-index:1;
+  background:#fff;
+  border:1px solid #EDE9F4;
+  border-radius:0 48px 48px 0;
+  padding:10px 48px 10px 56px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  transition:box-shadow .25s,border-color .25s;
+  min-width:0;
+}
+.card-wrap:hover .card-body{
+  box-shadow:0 4px 22px rgba(107,0,160,0.1);
+  border-color:#D8B4FE;
+}
+
+.card-type{
+  font-size:9px;font-weight:600;color:#A855F7;
+  letter-spacing:.4px;
+  text-transform:capitalize;
+}
+.card-title{
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:12px;font-weight:700;color:#1a1a2e;
+  line-height:1.3;margin-top:1px;
+  overflow:hidden;display:-webkit-box;
+  -webkit-line-clamp:2;-webkit-box-orient:vertical;
+}
+.card-loc{
+  font-size:10px;color:#6B7280;
+  display:flex;align-items:center;gap:3px;margin-top:2px;
+  font-weight:500;
+}
+.card-loc i{font-size:10px;color:#A810A8}
+.card-bottom{
+  display:flex;align-items:center;
+  justify-content:space-between;gap:4px;margin-top:4px;
+}
+.card-price{
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:13px;font-weight:700;color:#6B00A0;line-height:1;white-space:nowrap;
+}
+.card-price-unit{
+  font-family:'DM Sans',sans-serif;
+  font-size:9px;font-weight:400;color:#9CA3AF;display:block;margin-top:1px;
+}
+.card-meta{text-align:right}
+.card-poster,.card-posted{font-size:9px;color:#9CA3AF;white-space:nowrap;font-weight:500}
+
+/* Compteur photos — dans le flux, pas en absolu */
+.card-photo-count{
+  display:inline-flex;align-items:center;gap:2px;
+  font-size:9px;color:#C4B5D8;font-weight:500;
+  white-space:nowrap;
+}
+.card-photo-count i{font-size:9px}
+
+/* Bouton appel — taille min 44px pour accessibilité tactile */
+.card-contact{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:4;
+  width:32px;height:32px;
+  border-radius:10px;
+  border:1.5px solid #A810A8;
+  background:#fff;
+  display:flex;align-items:center;justify-content:center;
+  color:#A810A8;
+  font-size:15px;
+  text-decoration:none;
+  cursor:pointer;
+  transition:background .15s,color .15s,transform .1s;
+  -webkit-tap-highlight-color:transparent;
+  /* Étendre la zone de tap sans changer le visuel */
+  padding:6px;
+}
+.card-contact:hover{background:#A810A8;color:#fff;transform:translateY(-50%) scale(1.05)}
+.card-contact:active{transform:translateY(-50%) scale(0.96)}
+
+/* ── EMPTY STATE ── */
+.empty-state{
+  grid-column:1/-1;
+  padding:56px 24px;
+  text-align:center;
+  color:#9CA3AF;
+  font-size:13px;
+  font-weight:500;
+}
+.empty-state i{font-size:40px;display:block;margin-bottom:14px;color:#D1D5DB}
+
+/* ── OVERLAY ── */
+.overlay{
+  position:fixed;inset:0;
+  z-index:9999;
+  pointer-events:none;overflow:hidden;visibility:hidden;
+}
+.overlay.active{pointer-events:all;visibility:visible}
+.overlay-circle{
+  position:absolute;border-radius:50%;
+  background:linear-gradient(135deg,#6B00A0,#A810A8);
+  z-index:1;will-change:transform;
+}
+
+/* Galerie */
+.overlay-gallery{
+  position:absolute;inset:0;z-index:2;
+  opacity:0;transition:opacity .35s;
+}
+.overlay-gallery-track{
+  width:100%;height:100%;
+  display:flex;
+  transition:transform .4s cubic-bezier(.4,0,.2,1);
+}
+.overlay-gallery-slide{min-width:100%;height:100%;flex-shrink:0}
+.overlay-gallery-slide img{width:100%;height:100%;object-fit:cover;display:block}
+
+.gallery-arrow{
+  position:absolute;top:50%;
+  transform:translateY(-50%);
+  z-index:10;
+  width:42px;height:42px;
+  border-radius:50%;
+  background:rgba(0,0,0,0.3);
+  border:1.5px solid rgba(255,255,255,0.25);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:18px;
+  cursor:pointer;
+  opacity:0;transition:opacity .3s,background .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.gallery-arrow:hover{background:rgba(0,0,0,0.55)}
+.gallery-arrow.left{left:16px}
+.gallery-arrow.right{right:16px}
+
+.gallery-dots{
+  position:absolute;bottom:92px;left:50%;
+  transform:translateX(-50%);
+  z-index:10;display:flex;gap:6px;
+  opacity:0;transition:opacity .3s;
+}
+.gallery-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(255,255,255,0.4);
+  cursor:pointer;
+  transition:background .2s,transform .2s;
+}
+.gallery-dot.active{background:#fff;transform:scale(1.4)}
+
+.overlay-grad{
+  position:absolute;bottom:0;left:0;right:0;height:60%;
+  background:linear-gradient(to top,rgba(10,0,25,0.92),transparent);
+  z-index:3;opacity:0;transition:opacity .3s;
+}
+.overlay-info{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:clamp(20px,4vw,40px) clamp(20px,5vw,48px);
+  z-index:4;opacity:0;
+  transform:translateY(20px);
+  transition:opacity .3s,transform .3s;
+}
+.overlay-type{
+  font-size:11px;font-weight:600;color:#C084FC;
+  letter-spacing:.5px;margin-bottom:6px;
+}
+.overlay-title{
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:clamp(20px,3.5vw,32px);font-weight:700;color:#fff;
+  margin-bottom:8px;line-height:1.2;
+}
+.overlay-loc-row{
+  font-size:clamp(12px,1.4vw,14px);color:rgba(255,255,255,0.65);
+  display:flex;align-items:center;gap:6px;margin-bottom:16px;
+  font-weight:500;
+}
+.overlay-price{
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:clamp(18px,2.5vw,26px);font-weight:700;color:#fff;
+}
+.overlay-price span{
+  font-family:'DM Sans',sans-serif;
+  font-size:clamp(11px,1.2vw,13px);font-weight:400;color:rgba(255,255,255,0.5);
+}
+.overlay-desc{
+  font-size:clamp(12px,1.3vw,13.5px);color:rgba(255,255,255,0.68);
+  margin-top:10px;max-width:520px;line-height:1.65;font-weight:400;
+}
+.overlay-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.overlay-tag{
+  font-size:10.5px;font-weight:500;
+  padding:3px 11px;border-radius:20px;
+  background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.82);
+  border:1px solid rgba(255,255,255,0.18);
+}
+.overlay-cta{
+  display:inline-flex;align-items:center;gap:8px;
+  margin-top:18px;padding:11px 24px;
+  border-radius:10px;
+  background:#fff;color:#6B00A0;
+  font-size:13px;font-weight:700;
+  text-decoration:none;
+  transition:background .15s,transform .1s;
+}
+.overlay-cta:hover{background:#f0e6ff;transform:translateY(-1px)}
+.overlay-cta:active{transform:translateY(0)}
+
+.overlay-close{
+  position:fixed;
+  top:clamp(14px,3vw,26px);right:clamp(14px,3vw,26px);
+  z-index:10000;
+  width:44px;height:44px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.15);
+  border:1.5px solid rgba(255,255,255,0.35);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:#fff;font-size:20px;
+  opacity:0;pointer-events:none;
+  transition:opacity .3s,background .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.overlay-close:hover{background:rgba(255,255,255,0.28)}
+.overlay-close:active{transform:scale(0.93)}
+
+/* ── FOOTER ── */
+.footer-bar{
+  background:linear-gradient(135deg,#6B00A0,#A810A8);
+  padding:18px 24px;margin:28px 24px 40px;border-radius:14px;
+  display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+}
+.footer-bar-text{flex:1;min-width:200px}
+.footer-bar-title{
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:16px;font-weight:700;color:#fff;margin-bottom:3px;
+}
+.footer-bar-sub{font-size:10px;color:rgba(255,255,255,0.55);line-height:1.7;font-weight:400}
+.footer-bar-ctas{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .topbar{padding:11px 14px;gap:10px}
+  .topbar-sep,.topbar-nav{display:none}
+  .section-head,.filters,.grid{padding-left:14px;padding-right:14px}
+  .footer-bar{margin-left:14px;margin-right:14px;padding:14px 16px;flex-direction:column;gap:14px}
+  .footer-bar-ctas{flex-direction:column;width:100%}
+  .footer-bar-ctas a{justify-content:center}
+  .grid{grid-template-columns:1fr;gap:8px}
+  .card-wrap{height:82px}
+  .card-circle{width:82px;height:82px}
+  .card-body{left:41px;padding:8px 44px 8px 48px}
+  .card-contact{width:28px;height:28px;font-size:14px;right:8px}
+  .circle-icon{font-size:22px}
+  .card-title{font-size:11px}
+  .card-price{font-size:12px}
+  .gallery-arrow{width:34px;height:34px;font-size:15px}
+  .filter-group-label{display:none}
+  .filter-sep{display:none}
+}
+@media(min-width:601px) and (max-width:960px){
+  .topbar-nav{display:none}
+  .grid{grid-template-columns:1fr}
+}
+@media(min-width:961px) and (max-width:1280px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(min-width:1281px){
+  .grid{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">Bomakey <span>immo</span></div>
+  <div class="topbar-sep"></div>
+  <nav class="topbar-nav" aria-label="Navigation principale">
+    <a href="#">Annonces vérifiées</a>
+    <a href="#" class="active" aria-current="page">Non vérifiées</a>
+    <a href="#">Carte</a>
+  </nav>
+  <div class="topbar-ctas">
+    <a href="#" class="btn-white"><i class="ti ti-search" aria-hidden="true"></i>Chercher</a>
+    <a href="#" class="btn-ghost"><i class="ti ti-plus" aria-hidden="true"></i>Publier</a>
+  </div>
+</div>
+
+<div class="banner" role="alert">
+  <div class="banner-dot" aria-hidden="true"></div>
+  <div class="banner-text"><strong>Annonces non vérifiées</strong> — en attente de validation. Vérifiez les informations avant tout paiement.</div>
+  <a href="#" class="banner-link">Comment ça marche ?</a>
+</div>
+
+<div class="section-head">
+  <h1 class="section-title">Offres en attente</h1>
+  <div class="section-count" id="sectionCount" aria-live="polite">— annonces</div>
+</div>
+
+<div class="filters" id="filtersContainer" role="group" aria-label="Filtres d'annonces">
+  <!-- généré dynamiquement -->
+</div>
+
+<div class="grid" id="grid" role="list">
+  <!-- généré dynamiquement -->
+</div>
+
+<div class="footer-bar">
+  <div class="footer-bar-text">
+    <div class="footer-bar-title">Trouvez votre logement sereinement.</div>
+    <div class="footer-bar-sub">Annonces vérifiées · Paiements traçables · Support local · +228 90 00 00 00 · contact@bomakey.com · © 2026 Bomakey</div>
+  </div>
+  <div class="footer-bar-ctas">
+    <a href="#" class="btn-white" style="padding:10px 20px;font-size:12px"><i class="ti ti-search" aria-hidden="true"></i>Chercher une annonce</a>
+    <a href="#" class="btn-ghost" style="padding:10px 20px;font-size:12px"><i class="ti ti-plus" aria-hidden="true"></i>Publier une annonce</a>
+  </div>
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Détail de l'annonce">
+  <div class="overlay-circle" id="overlayCircle"></div>
+  <div class="overlay-gallery" id="overlayGallery">
+    <div class="overlay-gallery-track" id="overlayTrack"></div>
+  </div>
+  <button class="gallery-arrow left" id="galleryPrev" aria-label="Photo précédente"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>
+  <button class="gallery-arrow right" id="galleryNext" aria-label="Photo suivante"><i class="ti ti-chevron-right" aria-hidden="true"></i></button>
+  <div class="gallery-dots" id="galleryDots" role="tablist" aria-label="Navigation photos"></div>
+  <div class="overlay-grad" id="overlayGrad" aria-hidden="true"></div>
+  <div class="overlay-info" id="overlayInfo">
+    <div class="overlay-type" id="overlayType"></div>
+    <div class="overlay-title" id="overlayTitle"></div>
+    <div class="overlay-loc-row">
+      <i class="ti ti-map-pin" aria-hidden="true" style="font-size:14px;color:rgba(255,255,255,0.6)"></i>
+      <span id="overlayLoc"></span>
+    </div>
+    <div class="overlay-price"><span id="overlayPrice"></span> <span>XOF / mois</span></div>
+    <div class="overlay-desc" id="overlayDesc"></div>
+    <div class="overlay-tags" id="overlayTags"></div>
+    <a href="#" class="overlay-cta" id="overlayCta"><i class="ti ti-phone" aria-hidden="true"></i>Appeler le propriétaire</a>
+  </div>
+  <button class="overlay-close" id="overlayClose" aria-label="Fermer le détail">
+    <i class="ti ti-x" aria-hidden="true"></i>
+  </button>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   CONSTANTES CENTRALISÉES
+   ═══════════════════════════════════════════ */
+const TYPE_LABEL_MAP = {
+  "Local commercial": "Local",
+  "Local":            "Local",
+  "Chambre meublée":  "Chambre",
+  "Studio":           "Studio",
+  "Studio meublé":    "Studio",
+  "Bureau":           "Bureau",
+  "Appartement F2":   "Appartement",
+  "Appartement":      "Appartement"
+};
+
+/* ═══════════════════════════════════════════
+   DONNÉES — source unique de vérité
+   ═══════════════════════════════════════════ */
+const ANNONCES = [
+  {
+    id:1, type:"Local commercial", titre:"Local à louer, centre Calavi",
+    ville:"Calavi", pays:"Bénin", prix:"30 000",
+    telephone:"+22890000001", poster:"Kofi A.", publie:"il y a 2 j.",
+    statut:"pending",
+    description:"Local en rez-de-chaussée, façade sur rue principale. Idéal pour boutique ou restaurant. Eau et électricité disponibles.",
+    tags:["Rez-de-chaussée","Façade rue","Eau & Élec."],
+    icon:"ti-building",
+    photos:[
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1400&q=90",
+      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=1400&q=90",
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=90"
+    ],
+    thumbs:[
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=300&q=70",
+    ]
+  },
+  {
+    id:2, type:"Local", titre:"Local lumineux, Tokoin Lomé",
+    ville:"Lomé", pays:"Togo", prix:"20 000",
+    telephone:"+22890000002", poster:"Ama S.", publie:"il y a 5 h.",
+    statut:"new",
+    description:"Grand local lumineux au cœur de Tokoin. Murs peints, sol carrelé, porte sécurisée. Accès facile depuis l'axe principal.",
+    tags:["Carrelé","Sécurisé","Axe principal"],
+    icon:"ti-home",
+    photos:[
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1400&q=90",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1400&q=90"
+    ],
+    thumbs:["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=300&q=70"]
+  },
+  {
+    id:3, type:"Chambre meublée", titre:"Chambre avec salon, Akpakpa",
+    ville:"Cotonou", pays:"Bénin", prix:"45 000",
+    telephone:"+22890000003", poster:"Mensah D.", publie:"il y a 1 j.",
+    statut:"pending",
+    description:"Chambre spacieuse avec salon séparé et salle de bain privée. Meublée (lit, armoire, canapé). Quartier calme et sécurisé.",
+    tags:["Meublée","Salon privé","Salle de bain"],
+    icon:"ti-door",
+    photos:[
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1400&q=90",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=1400&q=90",
+      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1400&q=90",
+      "https://images.unsplash.com/photo-1560185127-6a8f1a43de48?w=1400&q=90"
+    ],
+    thumbs:["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=300&q=70"]
+  },
+  {
+    id:4, type:"Studio", titre:"Studio moderne, Adidogomé",
+    ville:"Lomé", pays:"Togo", prix:"35 000",
+    telephone:"+22890000004", poster:"Abena K.", publie:"il y a 3 h.",
+    statut:"new",
+    description:"Studio neuf avec cuisine intégrée et douche moderne. Immeuble récent, gardien 24h/24. Proche marché Adidogomé.",
+    tags:["Neuf","Cuisine intégrée","Gardien 24h"],
+    icon:"ti-layout-2",
+    photos:[
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1400&q=90",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1400&q=90"
+    ],
+    thumbs:["https://images.unsplash.com/photo-1484154218962-a197022b5858?w=300&q=70"]
+  },
+  {
+    id:5, type:"Bureau", titre:"Plateau ouvert, Zone 4 Abidjan",
+    ville:"Abidjan", pays:"Côte d'Ivoire", prix:"80 000",
+    telephone:"+2250700000005", poster:"Kouassi R.", publie:"il y a 4 j.",
+    statut:"pending",
+    description:"Open space climatisé de 120 m² au 3e étage. Fibre optique, parking réservé, salle de réunion partagée. Idéal startup ou agence.",
+    tags:["Climatisé","Fibre optique","Parking","120 m²"],
+    icon:"ti-briefcase",
+    photos:[
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=90",
+      "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1400&q=90",
+      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1400&q=90"
+    ],
+    thumbs:["https://images.unsplash.com/photo-1497366216548-37526070297c?w=300&q=70"]
+  },
+  {
+    id:6, type:"Studio meublé", titre:"Studio tout équipé, Yopougon",
+    ville:"Abidjan", pays:"Côte d'Ivoire", prix:"50 000",
+    telephone:"+2250700000006", poster:"N'Guessan F.", publie:"il y a 2 j.",
+    statut:"pending",
+    description:"Studio entièrement équipé : lit, TV, réfrigérateur, climatiseur. Eau chaude. Dans une résidence sécurisée de Yopougon.",
+    tags:["Tout équipé","Climatisé","Eau chaude","Résidence sécurisée"],
+    icon:"ti-sofa",
+    photos:[
+      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1400&q=90",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1400&q=90"
+    ],
+    thumbs:["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300&q=70"]
+  },
+  {
+    id:7, type:"Appartement F2", titre:"Appart. calme, Agoè-Nyivé",
+    ville:"Lomé", pays:"Togo", prix:"55 000",
+    telephone:"+22890000007", poster:"Yao B.", publie:"il y a 6 j.",
+    statut:"pending",
+    description:"F2 au 2e étage : salon, chambre, cuisine équipée, douche. Quartier résidentiel calme. Balcon avec vue dégagée.",
+    tags:["Balcon","Cuisine équipée","Calme","Vue dégagée"],
+    icon:"ti-home-2",
+    photos:[
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=1400&q=90",
+      "https://images.unsplash.com/photo-1560185127-6a8f1a43de48?w=1400&q=90",
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1400&q=90"
+    ],
+    thumbs:["https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=300&q=70"]
+  },
+  {
+    id:8, type:"Local commercial", titre:"Local rez-de-chaussée, Cadjèhoun",
+    ville:"Cotonou", pays:"Bénin", prix:"40 000",
+    telephone:"+22990000008", poster:"Séna G.", publie:"il y a 9 h.",
+    statut:"new",
+    description:"Local commercial de 60 m² en rez-de-chaussée sur artère commerçante de Cadjèhoun. Vitrine rénovée, sol en granit.",
+    tags:["60 m²","Vitrine rénovée","Artère commerçante"],
+    icon:"ti-building-store",
+    photos:[
+      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=1400&q=90",
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1400&q=90",
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=90"
+    ],
+    thumbs:["https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=300&q=70"]
+  }
+];
+
+/* ═══════════════════════════════════════════
+   FILTRES — construits dynamiquement
+   ═══════════════════════════════════════════ */
+function getFilterValues() {
+  const types = new Set();
+  const villes = new Set();
+  ANNONCES.forEach(a => {
+    types.add(TYPE_LABEL_MAP[a.type] || a.type);
+    villes.add(a.ville);
+  });
+  return { types:[...types].sort(), villes:[...villes].sort() };
+}
+
+function buildFilters() {
+  const container = document.getElementById('filtersContainer');
+  const { types, villes } = getFilterValues();
+  let html = `<div class="filter-pill active" data-filter="Tout">Tout</div>`;
+  html += `<div class="filter-sep" aria-hidden="true"></div>`;
+  html += `<span class="filter-group-label">Type</span>`;
+  html += types.map(t => `<div class="filter-pill" data-filter="${t}" role="button" tabindex="0">${t}</div>`).join('');
+  html += `<div class="filter-sep" aria-hidden="true"></div>`;
+  html += `<span class="filter-group-label">Ville</span>`;
+  html += villes.map(v => `<div class="filter-pill" data-filter="${v}" role="button" tabindex="0">${v}</div>`).join('');
+  container.innerHTML = html;
+
+  container.querySelectorAll('.filter-pill').forEach(pill => {
+    const activate = function() {
+      container.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      this.classList.add('active');
+      renderGrid(this.dataset.filter);
+    };
+    pill.addEventListener('click', activate);
+    pill.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' ') { e.preventDefault(); activate.call(pill); }});
+  });
+}
+
+/* ═══════════════════════════════════════════
+   RENDU DES CARDS
+   ═══════════════════════════════════════════ */
+function filterAnnonces(filterValue) {
+  if (filterValue === 'Tout') return ANNONCES;
+  return ANNONCES.filter(a =>
+    TYPE_LABEL_MAP[a.type] === filterValue || a.ville === filterValue
+  );
+}
+
+function renderGrid(filterValue = 'Tout') {
+  const grid = document.getElementById('grid');
+  const count = document.getElementById('sectionCount');
+  const filtered = filterAnnonces(filterValue);
+  const pays = [...new Set(filtered.map(a => a.pays))].join(' & ');
+  count.textContent = `${filtered.length} annonce${filtered.length>1?'s':''}${pays?' · '+pays:''}`;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state" role="listitem">
+        <i class="ti ti-search-off" aria-hidden="true"></i>
+        Aucune annonce pour ce filtre.
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(a => {
+    const badgeClass = a.statut==='new' ? 'badge-new' : 'badge-pending';
+    const badgeLabel = a.statut==='new' ? 'Nouveau' : 'En attente';
+    const nbPhotos = a.photos.length;
+    const thumbSrc = (a.thumbs && a.thumbs[0]) ? a.thumbs[0] : (a.photos[0] ? a.photos[0].replace('w=1400','w=300').replace('q=90','q=70') : '');
+    const photoInfo = nbPhotos>1
+      ? `<div class="card-photo-count" aria-label="${nbPhotos} photos"><i class="ti ti-photo" aria-hidden="true"></i>${nbPhotos} photos</div>`
+      : '';
+    return `
+    <article class="card-wrap" data-id="${a.id}" role="listitem" tabindex="0"
+      aria-label="${a.titre}, ${a.prix} XOF par mois, ${a.ville}">
+      <div class="card-circle" aria-hidden="true">
+        ${thumbSrc
+          ? `<img class="circle-photo" src="${thumbSrc}" alt="" loading="lazy" onload="this.classList.add('loaded')">
+             <div class="circle-overlay"></div>`
+          : ''}
+        <svg class="arc-svg" stroke="rgba(255,255,255,0.35)" stroke-width="8" fill="none" viewBox="0 0 200 200" aria-hidden="true"><path d="M 0 100 A 100 100 0 0 1 200 100"/></svg>
+        <svg class="arc-svg bot" stroke="rgba(255,255,255,0.35)" stroke-width="8" fill="none" viewBox="0 0 200 200" aria-hidden="true"><path d="M 0 100 A 100 100 0 0 1 200 100"/></svg>
+        ${!thumbSrc ? `<i class="ti ${a.icon} circle-icon" aria-hidden="true"></i>` : ''}
+        <span class="card-badge ${badgeClass}">${badgeLabel}</span>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="card-type">${a.type}</div>
+          <div class="card-title">${a.titre}</div>
+          <div class="card-loc">
+            <i class="ti ti-map-pin" aria-hidden="true"></i>${a.ville}, ${a.pays}
+          </div>
+        </div>
+        <div class="card-bottom">
+          <div>
+            <div class="card-price">${a.prix}</div>
+            <span class="card-price-unit">XOF / mois</span>
+          </div>
+          ${photoInfo}
+          <div class="card-meta">
+            <div class="card-poster">${a.poster}</div>
+            <div class="card-posted">${a.publie}</div>
+          </div>
+        </div>
+        <a href="tel:${a.telephone}"
+           class="card-contact"
+           onclick="event.stopPropagation()"
+           aria-label="Appeler ${a.poster}"
+           title="Appeler ${a.poster}">
+          <i class="ti ti-phone" aria-hidden="true"></i>
+        </a>
+      </div>
+    </article>`;
+  }).join('');
+
+  // Rebind events
+  document.querySelectorAll('.card-wrap').forEach(card => {
+    const open = () => {
+      const annonce = ANNONCES.find(a => a.id === parseInt(card.dataset.id));
+      if (annonce) openOverlay(card, annonce);
+    };
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', e => { if(e.key==='Enter') open(); });
+  });
+}
+
+/* ═══════════════════════════════════════════
+   OVERLAY + GALERIE
+   ═══════════════════════════════════════════ */
+const overlay  = document.getElementById('overlay');
+const circle   = document.getElementById('overlayCircle');
+const gallery  = document.getElementById('overlayGallery');
+const track    = document.getElementById('overlayTrack');
+const dots     = document.getElementById('galleryDots');
+const grad     = document.getElementById('overlayGrad');
+const info     = document.getElementById('overlayInfo');
+const prevBtn  = document.getElementById('galleryPrev');
+const nextBtn  = document.getElementById('galleryNext');
+const closeBtn = document.getElementById('overlayClose');
+
+let busy=false, currentSlide=0, totalSlides=0;
+
+function buildGallery(photos) {
+  track.innerHTML = photos.map((src,i) =>
+    `<div class="overlay-gallery-slide"><img src="${src}" alt="Photo ${i+1}" loading="${i===0?'eager':'lazy'}"></div>`
+  ).join('');
+  dots.innerHTML = photos.map((_,i) =>
+    `<div class="gallery-dot${i===0?' active':''}" data-index="${i}"
+      role="tab" aria-label="Photo ${i+1}" tabindex="0"></div>`
+  ).join('');
+  dots.querySelectorAll('.gallery-dot').forEach(dot => {
+    dot.addEventListener('click', e => { e.stopPropagation(); goToSlide(parseInt(dot.dataset.index)); });
+  });
+  totalSlides = photos.length; currentSlide=0; goToSlide(0,true);
+  const show = photos.length>1;
+  prevBtn.style.display = show?'flex':'none';
+  nextBtn.style.display = show?'flex':'none';
+  dots.style.display    = show?'flex':'none';
+}
+
+function goToSlide(index, instant=false) {
+  currentSlide = (index+totalSlides)%totalSlides;
+  track.style.transition = instant?'none':'transform .4s cubic-bezier(.4,0,.2,1)';
+  track.style.transform  = `translateX(-${currentSlide*100}%)`;
+  dots.querySelectorAll('.gallery-dot').forEach((d,i) => {
+    d.classList.toggle('active', i===currentSlide);
+    d.setAttribute('aria-selected', i===currentSlide);
+  });
+}
+
+prevBtn.addEventListener('click', e => { e.stopPropagation(); goToSlide(currentSlide-1); });
+nextBtn.addEventListener('click', e => { e.stopPropagation(); goToSlide(currentSlide+1); });
+
+// Swipe
+let touchStartX=0;
+gallery.addEventListener('touchstart', e => { touchStartX=e.touches[0].clientX; },{passive:true});
+gallery.addEventListener('touchend',   e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if(Math.abs(dx)>40) goToSlide(dx<0?currentSlide+1:currentSlide-1);
+});
+
+// Navigation clavier overlay
+overlay.addEventListener('keydown', e => {
+  if(e.key==='ArrowRight') goToSlide(currentSlide+1);
+  if(e.key==='ArrowLeft')  goToSlide(currentSlide-1);
+  if(e.key==='Escape')     closeOverlay();
+});
+
+function setContent(annonce) {
+  document.getElementById('overlayType').textContent  = annonce.type;
+  document.getElementById('overlayTitle').textContent = annonce.titre;
+  document.getElementById('overlayLoc').textContent   = `${annonce.ville}, ${annonce.pays}`;
+  document.getElementById('overlayPrice').textContent = annonce.prix;
+  document.getElementById('overlayDesc').textContent  = annonce.description||'';
+  const tagsEl = document.getElementById('overlayTags');
+  tagsEl.innerHTML = (annonce.tags||[]).map(t=>`<span class="overlay-tag">${t}</span>`).join('');
+  document.getElementById('overlayCta').href = `tel:${annonce.telephone}`;
+  buildGallery(annonce.photos);
+}
+
+function showElements() {
+  [gallery,grad,info,prevBtn,nextBtn,dots].forEach(el=>{
+    el.style.transition='opacity .35s'; el.style.opacity='1';
+  });
+  info.style.transform='translateY(0)';
+  closeBtn.style.transition='opacity .35s';
+  closeBtn.style.opacity='1'; closeBtn.style.pointerEvents='all';
+  closeBtn.focus();
+}
+function hideElements(instant=false) {
+  const d=instant?'0s':'.15s';
+  [gallery,grad,info,prevBtn,nextBtn,dots].forEach(el=>{
+    el.style.transition=`opacity ${d}`; el.style.opacity='0';
+  });
+  if(!instant) info.style.transform='translateY(16px)';
+  closeBtn.style.transition=`opacity ${d}`;
+  closeBtn.style.opacity='0'; closeBtn.style.pointerEvents='none';
+}
+
+function openOverlay(card, annonce) {
+  if(busy) return; busy=true;
+  const cardCircle = card.querySelector('.card-circle');
+  const rect=cardCircle.getBoundingClientRect();
+  const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+  const r=Math.sqrt(
+    Math.pow(Math.max(cx,window.innerWidth-cx),2)+
+    Math.pow(Math.max(cy,window.innerHeight-cy),2)
+  )*2.1;
+  circle.style.transition='none';
+  circle.style.width=r+'px'; circle.style.height=r+'px';
+  circle.style.left=(cx-r/2)+'px'; circle.style.top=(cy-r/2)+'px';
+  circle.style.transform='scale(0) rotate(0deg)';
+  hideElements(true); setContent(annonce);
+  overlay.classList.add('active');
+  // Piège le focus dans l'overlay
+  overlay.setAttribute('aria-hidden','false');
+  requestAnimationFrame(()=>{requestAnimationFrame(()=>{
+    circle.style.transition='transform .7s cubic-bezier(.4,0,.2,1)';
+    circle.style.transform='scale(1) rotate(360deg)';
+    setTimeout(()=>{ showElements(); busy=false; },550);
+  });});
+}
+function closeOverlay() {
+  if(busy||!overlay.classList.contains('active')) return;
+  busy=true; hideElements(true);
+  circle.style.transition='transform .45s cubic-bezier(.4,0,.2,1)';
+  circle.style.transform='scale(0) rotate(0deg)';
+  setTimeout(()=>{
+    overlay.classList.remove('active');
+    overlay.setAttribute('aria-hidden','true');
+    busy=false;
+  },460);
+}
+closeBtn.addEventListener('click',e=>{e.stopPropagation();closeOverlay();});
+
+/* ═══════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════ */
+buildFilters();
+renderGrid('Tout');
+</script>
+</body>
+</html>
